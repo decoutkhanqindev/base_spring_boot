@@ -5,24 +5,23 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 
 @Entity
 public class User {
-
   @Id
   @GeneratedValue(strategy = GenerationType.UUID)
-  private Long id;
+  private String id;
   private String username;
   private String password;
   private String email;
-  private LocalDateTime dob;
+  private LocalDate dob;
 
-  public Long getId() {
+  public String getId() {
     return id;
   }
 
-  public void setId(Long id) {
+  public void setId(String id) {
     this.id = id;
   }
 
@@ -50,11 +49,11 @@ public class User {
     this.email = email;
   }
 
-  public LocalDateTime getDob() {
+  public LocalDate getDob() {
     return dob;
   }
 
-  public void setDob(LocalDateTime dob) {
+  public void setDob(LocalDate dob) {
     this.dob = dob;
   }
 }
