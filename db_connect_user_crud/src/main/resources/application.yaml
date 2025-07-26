@@ -1,7 +1,7 @@
 server:
   port: 8080
   servlet:
-    context-path: /users
+    context-path: /user
 
 spring:
   application:
@@ -11,3 +11,7 @@ spring:
     url: jdbc:mysql://localhost:3306/users_db
     username: root
     password: 123123123
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
