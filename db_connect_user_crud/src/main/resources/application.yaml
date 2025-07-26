@@ -1,3 +1,8 @@
+server:
+  port: 8080
+  servlet:
+    context-path: /users
+
 spring:
   application:
     name: db_connect_user_crud
