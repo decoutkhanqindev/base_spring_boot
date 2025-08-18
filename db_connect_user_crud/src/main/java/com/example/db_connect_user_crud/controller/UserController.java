@@ -1,8 +1,9 @@
 package com.example.db_connect_user_crud.controller;
 
 import com.example.db_connect_user_crud.dto.request.UserRequest;
-import com.example.db_connect_user_crud.entity.User;
+import com.example.db_connect_user_crud.model.User;
 import com.example.db_connect_user_crud.service.UserService;
+import jakarta.validation.Valid;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -17,30 +18,27 @@ public class UserController {
   }
 
   @PostMapping
-  public User addUser(@RequestBody UserRequest userRequest) {
-    return userService.addUser(userRequest);
+  public User createUser(@RequestBody @Valid UserRequest userRequest) {
+    return userService.createUser(userRequest);
   }
 
-  @GetMapping
-  public List<User> getAllUser() {
-    return userService.getAllUser();
+  @GetMapping("/all")
+  public List<User> getAllUsers() {
+    return userService.getAllUsers();
   }
 
   @GetMapping("/{id}")
-  public User getUser(@PathVariable String id) {
-    return userService.getUser(id);
+  public User getUserById(@PathVariable String id) {
+    return userService.getUserById(id);
   }
 
   @PutMapping("/{id}")
-  public User updateUser(
-      @PathVariable String id,
-      @RequestBody UserRequest userRequest
-  ) {
-    return userService.updateUser(id, userRequest);
+  public User updateUserById(@PathVariable String id, @RequestBody UserRequest userRequest) {
+    return userService.updateUserById(id, userRequest);
   }
 
   @DeleteMapping("/{id}")
-  public void deleteUser(@PathVariable String id) {
-    userService.deleteUser(id);
+  public void deleteUserById(@PathVariable String id) {
+    userService.deleteUserById(id);
   }
 }

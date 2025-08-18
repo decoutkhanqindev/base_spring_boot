@@ -1,7 +1,7 @@
 package com.example.db_connect_user_crud.service;
 
 import com.example.db_connect_user_crud.dto.request.UserRequest;
-import com.example.db_connect_user_crud.entity.User;
+import com.example.db_connect_user_crud.model.User;
 import com.example.db_connect_user_crud.repository.UserRepository;
 import org.springframework.stereotype.Service;
 
@@ -16,7 +16,10 @@ public class UserService {
     this.userRepository = userRepository;
   }
 
-  public User addUser(UserRequest userRequest) {
+  public User createUser(UserRequest userRequest) {
+    if (userRepository.existsByUsername(userRequest.getUsername()))
+      throw new RuntimeException("User already exists");
+
     User user = new User();
     user.setUsername(userRequest.getUsername());
     user.setPassword(userRequest.getPassword());
@@ -26,16 +29,17 @@ public class UserService {
     return userRepository.save(user);
   }
 
-  public List<User> getAllUser() {
+  public List<User> getAllUsers() {
     return userRepository.findAll();
   }
 
-  public User getUser(String id) {
-    return userRepository.findById(id).get();
+  public User getUserById(String id) {
+    return userRepository.findById(id)
+      .orElseThrow(() -> new RuntimeException("User not found"));
   }
 
-  public User updateUser(String id, UserRequest userRequest) {
-    User user = getUser(id);
+  public User updateUserById(String id, UserRequest userRequest) {
+    User user = getUserById(id);
     user.setUsername(userRequest.getUsername());
     user.setPassword(userRequest.getPassword());
     user.setEmail(userRequest.getEmail());
@@ -44,7 +48,7 @@ public class UserService {
     return userRepository.save(user);
   }
 
-  public void deleteUser(String id) {
+  public void deleteUserById(String id) {
     userRepository.deleteById(id);
   }
 }
