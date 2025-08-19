@@ -1,9 +1,12 @@
 package com.example.db_connect_user_crud.service;
 
-import com.example.db_connect_user_crud.dto.request.UserRequest;
+import com.example.db_connect_user_crud.dto.request.UserCreationRequest;
+import com.example.db_connect_user_crud.dto.request.UserUpdateRequest;
+import com.example.db_connect_user_crud.dto.response.UserResponse;
+import com.example.db_connect_user_crud.entity.User;
 import com.example.db_connect_user_crud.exception.AppError;
 import com.example.db_connect_user_crud.exception.AppException;
-import com.example.db_connect_user_crud.model.User;
+import com.example.db_connect_user_crud.mapper.UserMapper;
 import com.example.db_connect_user_crud.repository.UserRepository;
 import org.springframework.stereotype.Service;
 
@@ -12,48 +15,46 @@ import java.util.List;
 @Service
 public class UserService {
   private final UserRepository repository;
+  private final UserMapper mapper;
 
   // Constructor injection
-  public UserService(UserRepository repository) {
+  public UserService(UserRepository repository, UserMapper mapper) {
     this.repository = repository;
+    this.mapper = mapper;
   }
 
-  public User createUser(UserRequest request) {
+  public UserResponse createUser(UserCreationRequest request) {
     if (repository.existsByUsername(request.getUsername()))
       throw new AppException(AppError.USER_EXISTS);
 
-    User user = User.builder()
-      .username(request.getUsername())
-      .password(request.getPassword())
-      .email(request.getEmail())
-      .dob(request.getDob())
-      .build();
-
-    return repository.save(user);
+    User user = mapper.toEntity(request);
+    return mapper.toResponse(repository.save(user));
   }
 
-  public List<User> getAllUsers() {
-    return repository.findAll();
+  public List<UserResponse> getAllUsers() {
+    return repository.findAll()
+      .stream()
+      .map(mapper::toResponse)
+      .toList();
   }
 
-  public User getUserById(String id) {
+  public UserResponse getUserById(String id) {
     return repository.findById(id)
+      .map(mapper::toResponse)
       .orElseThrow(() -> new AppException(AppError.USER_NOT_FOUND));
   }
 
-  public User updateUserById(String id, UserRequest request) {
-    User user = getUserById(id);
-    user.setUsername(request.getUsername());
-    user.setPassword(request.getPassword());
-    user.setEmail(request.getEmail());
-    user.setDob(request.getDob());
-
-    return repository.save(user);
+  public UserResponse updateUserById(String id, UserUpdateRequest request) {
+    UserResponse response = getUserById(id);
+    User user = mapper.toEntity(response);
+    mapper.updateEntity(user, request);
+    return mapper.toResponse(repository.save(user));
   }
 
-  public User deleteUserById(String id) {
-    User user = getUserById(id);
-    repository.deleteById(id);
-    return user;
+  public UserResponse deleteUserById(String id) {
+    UserResponse response = getUserById(id);
+    User user = mapper.toEntity(response);
+    repository.delete(user);
+    return mapper.toResponse(user);
   }
 }

@@ -3,8 +3,9 @@ package com.example.db_connect_user_crud.dto.response;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
+import java.time.LocalDate;
+
 @Data
-//@JsonInclude(JsonInclude.Include.NON_NULL)
 @Builder
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @NoArgsConstructor
@@ -13,12 +14,9 @@ import lombok.experimental.FieldDefaults;
 @Getter
 @ToString
 @EqualsAndHashCode
-public class ApiResponse<T> {
-  @Builder.Default
-  Boolean success = true;
-  @Builder.Default
-  int statusCode = 200;
-  @Builder.Default
-  String message = "";
-  T data;
+public class UserResponse {
+  String id;
+  String username;
+  String email;
+  LocalDate dob;
 }

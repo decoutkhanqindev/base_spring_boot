@@ -17,7 +17,7 @@ import java.time.LocalDate;
 @Getter
 @ToString
 @EqualsAndHashCode
-public class UserRequest {
+public class UserCreationRequest {
   @Size(min = 3, max = 20, message = "USERNAME_INVALID")
   @NotBlank(message = "USERNAME_NOT_BLANK")
   String username;
