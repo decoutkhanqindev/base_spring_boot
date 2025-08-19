@@ -45,15 +45,15 @@ public class UserService {
   }
 
   public UserResponse updateUserById(String id, UserUpdateRequest request) {
-    UserResponse response = getUserById(id);
-    User user = mapper.toEntity(response);
+    User user = repository.findById(id)
+      .orElseThrow(() -> new AppException(AppError.USER_NOT_FOUND));
     mapper.updateEntity(user, request);
     return mapper.toResponse(repository.save(user));
   }
 
   public UserResponse deleteUserById(String id) {
-    UserResponse response = getUserById(id);
-    User user = mapper.toEntity(response);
+    User user = repository.findById(id)
+      .orElseThrow(() -> new AppException(AppError.USER_NOT_FOUND));
     repository.delete(user);
     return mapper.toResponse(user);
   }
