@@ -7,15 +7,18 @@ import jakarta.validation.constraints.Size;
 import java.time.LocalDate;
 
 public class UserRequest {
-  @Size(min = 3, max = 20, message = "Username must be between 3 and 20 characters")
-  @NotBlank(message = "Username is required")
+  @Size(min = 3, max = 20, message =  "USERNAME_INVALID")
+  @NotBlank(message = "USERNAME_NOT_BLANK")
   private String username;
-  @Size(min = 8, message = "Password must be at least 8 characters")
-  @NotBlank(message = "Password is required")
+
+  @Size(min = 8, message = "PASSWORD_INVALID")
+  @NotBlank(message = "PASSWORD_NOT_BLANK")
   private String password;
-  @Email(message = "Email is not valid")
-  @NotBlank(message = "Email is required")
+
+  @Email(message = "EMAIL_INVALID")
+  @NotBlank(message = "EMAIL_NOT_BLANK")
   private String email;
+
   private LocalDate dob;
 
   public String getUsername() {

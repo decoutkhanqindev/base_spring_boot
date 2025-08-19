@@ -1,6 +1,8 @@
 package com.example.db_connect_user_crud.service;
 
 import com.example.db_connect_user_crud.dto.request.UserRequest;
+import com.example.db_connect_user_crud.exception.AppError;
+import com.example.db_connect_user_crud.exception.AppException;
 import com.example.db_connect_user_crud.model.User;
 import com.example.db_connect_user_crud.repository.UserRepository;
 import org.springframework.stereotype.Service;
@@ -9,46 +11,48 @@ import java.util.List;
 
 @Service
 public class UserService {
-  private final UserRepository userRepository;
+  private final UserRepository repository;
 
   // Constructor injection
-  public UserService(UserRepository userRepository) {
-    this.userRepository = userRepository;
+  public UserService(UserRepository repository) {
+    this.repository = repository;
   }
 
-  public User createUser(UserRequest userRequest) {
-    if (userRepository.existsByUsername(userRequest.getUsername()))
-      throw new RuntimeException("User already exists");
+  public User createUser(UserRequest request) {
+    if (repository.existsByUsername(request.getUsername()))
+      throw new AppException(AppError.USER_EXISTS);
 
     User user = new User();
-    user.setUsername(userRequest.getUsername());
-    user.setPassword(userRequest.getPassword());
-    user.setEmail(userRequest.getEmail());
-    user.setDob(userRequest.getDob());
+    user.setUsername(request.getUsername());
+    user.setPassword(request.getPassword());
+    user.setEmail(request.getEmail());
+    user.setDob(request.getDob());
 
-    return userRepository.save(user);
+    return repository.save(user);
   }
 
   public List<User> getAllUsers() {
-    return userRepository.findAll();
+    return repository.findAll();
   }
 
   public User getUserById(String id) {
-    return userRepository.findById(id)
-      .orElseThrow(() -> new RuntimeException("User not found"));
+    return repository.findById(id)
+      .orElseThrow(() -> new AppException(AppError.USER_NOT_FOUND));
   }
 
-  public User updateUserById(String id, UserRequest userRequest) {
+  public User updateUserById(String id, UserRequest request) {
     User user = getUserById(id);
-    user.setUsername(userRequest.getUsername());
-    user.setPassword(userRequest.getPassword());
-    user.setEmail(userRequest.getEmail());
-    user.setDob(userRequest.getDob());
+    user.setUsername(request.getUsername());
+    user.setPassword(request.getPassword());
+    user.setEmail(request.getEmail());
+    user.setDob(request.getDob());
 
-    return userRepository.save(user);
+    return repository.save(user);
   }
 
-  public void deleteUserById(String id) {
-    userRepository.deleteById(id);
+  public User deleteUserById(String id) {
+    User user = getUserById(id);
+    repository.deleteById(id);
+    return user;
   }
 }
