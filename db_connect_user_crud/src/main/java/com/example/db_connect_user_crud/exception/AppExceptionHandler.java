@@ -11,11 +11,12 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 public class AppExceptionHandler {
   @ExceptionHandler(value = RuntimeException.class)
   ResponseEntity<ApiResponse<String>> handleRuntimeException(RuntimeException e) {
-    ApiResponse<String> response = new ApiResponse<>();
-    response.setSuccess(false);
-    response.setStatusCode(500);
-    response.setMessage(e.getMessage());
-    response.setData(null);
+    ApiResponse<String> response = ApiResponse.<String>builder()
+      .success(false)
+      .statusCode(500)
+      .message(e.getMessage())
+      .data(null)
+      .build();
     return ResponseEntity.status(response.getStatusCode()).body(response);
   }
 
@@ -24,21 +25,23 @@ public class AppExceptionHandler {
     String message = e.getFieldError().getDefaultMessage();
     AppError error = AppError.valueOf(message);
 
-    ApiResponse<String> response = new ApiResponse<>();
-    response.setSuccess(false);
-    response.setStatusCode(error.getStatusCode());
-    response.setMessage(error.getMessage());
-    response.setData(null);
+    ApiResponse<String> response = ApiResponse.<String>builder()
+      .success(false)
+      .statusCode(error.getStatusCode())
+      .message(error.getMessage())
+      .data(null)
+      .build();
     return ResponseEntity.badRequest().body(response);
   }
 
   @ExceptionHandler(value = AppException.class)
   ResponseEntity<ApiResponse<String>> handleAppException(AppException e) {
-    ApiResponse<String> response = new ApiResponse<>();
-    response.setSuccess(false);
-    response.setStatusCode(e.getError().getStatusCode());
-    response.setMessage(e.getMessage());
-    response.setData(null);
+    ApiResponse<String> response = ApiResponse.<String>builder()
+      .success(false)
+      .statusCode(e.getError().getStatusCode())
+      .message(e.getError().getMessage())
+      .data(null)
+      .build();
     return ResponseEntity.status(response.getStatusCode()).body(response);
   }
 }

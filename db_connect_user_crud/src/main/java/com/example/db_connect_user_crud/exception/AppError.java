@@ -1,6 +1,14 @@
 package com.example.db_connect_user_crud.exception;
 
+import lombok.*;
+import lombok.experimental.FieldDefaults;
+
+@FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
+@AllArgsConstructor
+@Getter
+@ToString
 public enum AppError {
+  UNKNOWN_ERROR(500, "An unexpected error occurred"),
   USERNAME_INVALID(400, "Username must be between 3 and 20 characters"),
   PASSWORD_INVALID(400, "Password must be at least 8 characters"),
   EMAIL_INVALID(400, "Email is not valid"),
@@ -11,27 +19,6 @@ public enum AppError {
   USER_NOT_FOUND(401, "User not found"),
   ;
 
-  private int statusCode;
-  private String message;
-
-  AppError(int statusCode, String message) {
-    this.statusCode = statusCode;
-    this.message = message;
-  }
-
-  public String getMessage() {
-    return message;
-  }
-
-  public void setMessage(String message) {
-    this.message = message;
-  }
-
-  public int getStatusCode() {
-    return statusCode;
-  }
-
-  public void setStatusCode(int statusCode) {
-    this.statusCode = statusCode;
-  }
+  int statusCode;
+  String message;
 }

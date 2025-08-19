@@ -22,11 +22,12 @@ public class UserService {
     if (repository.existsByUsername(request.getUsername()))
       throw new AppException(AppError.USER_EXISTS);
 
-    User user = new User();
-    user.setUsername(request.getUsername());
-    user.setPassword(request.getPassword());
-    user.setEmail(request.getEmail());
-    user.setDob(request.getDob());
+    User user = User.builder()
+      .username(request.getUsername())
+      .password(request.getPassword())
+      .email(request.getEmail())
+      .dob(request.getDob())
+      .build();
 
     return repository.save(user);
   }

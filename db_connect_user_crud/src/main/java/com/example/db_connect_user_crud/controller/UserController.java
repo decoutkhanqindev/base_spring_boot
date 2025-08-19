@@ -21,40 +21,40 @@ public class UserController {
   @PostMapping
   public ApiResponse<User> createUser(@RequestBody @Valid UserRequest request) {
     User user = service.createUser(request);
-    ApiResponse<User> response = new ApiResponse<>();
-    response.setData(user);
-    return response;
+    return ApiResponse.<User>builder()
+      .data(user)
+      .build();
   }
 
   @GetMapping("/all")
   public ApiResponse<List<User>> getAllUsers() {
     List<User> users = service.getAllUsers();
-    ApiResponse<List<User>> response = new ApiResponse<>();
-    response.setData(users);
-    return response;
+    return ApiResponse.<List<User>>builder()
+      .data(users)
+      .build();
   }
 
   @GetMapping("/{id}")
   public ApiResponse<User> getUserById(@PathVariable String id) {
     User user = service.getUserById(id);
-    ApiResponse<User> response = new ApiResponse<>();
-    response.setData(user);
-    return response;
+    return ApiResponse.<User>builder()
+      .data(user)
+      .build();
   }
 
   @PutMapping("/{id}")
   public ApiResponse<User> updateUserById(@PathVariable String id, @RequestBody UserRequest request) {
     User user = service.updateUserById(id, request);
-    ApiResponse<User> response = new ApiResponse<>();
-    response.setData(user);
-    return response;
+    return ApiResponse.<User>builder()
+      .data(user)
+      .build();
   }
 
   @DeleteMapping("/{id}")
   public ApiResponse<User> deleteUserById(@PathVariable String id) {
     User user = service.deleteUserById(id);
-    ApiResponse<User> response = new ApiResponse<>();
-    response.setData(user);
-    return response;
+    return ApiResponse.<User>builder()
+      .data(user)
+      .build();
   }
 }
