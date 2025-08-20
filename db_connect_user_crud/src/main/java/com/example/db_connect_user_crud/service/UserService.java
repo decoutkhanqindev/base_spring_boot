@@ -8,6 +8,7 @@ import com.example.db_connect_user_crud.exception.AppError;
 import com.example.db_connect_user_crud.exception.AppException;
 import com.example.db_connect_user_crud.mapper.UserMapper;
 import com.example.db_connect_user_crud.repository.UserRepository;
+import lombok.val;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -17,7 +18,6 @@ public class UserService {
   private final UserRepository repository;
   private final UserMapper mapper;
 
-  // Constructor injection
   public UserService(UserRepository repository, UserMapper mapper) {
     this.repository = repository;
     this.mapper = mapper;

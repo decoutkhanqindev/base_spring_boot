@@ -1,6 +1,5 @@
 package com.example.db_connect_user_crud.exception;
 
-
 import com.example.db_connect_user_crud.dto.response.ApiResponse;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -11,10 +10,11 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 public class AppExceptionHandler {
   @ExceptionHandler(value = RuntimeException.class)
   ResponseEntity<ApiResponse<String>> handleRuntimeException(RuntimeException e) {
+    AppError error = AppError.UNKNOWN_ERROR;
     ApiResponse<String> response = ApiResponse.<String>builder()
       .success(false)
-      .statusCode(500)
-      .message(e.getMessage())
+      .statusCode(error.getStatusCode())
+      .message(error.getMessage())
       .data(null)
       .build();
     return ResponseEntity.status(response.getStatusCode()).body(response);
@@ -24,7 +24,6 @@ public class AppExceptionHandler {
   ResponseEntity<ApiResponse<String>> handleValidation(MethodArgumentNotValidException e) {
     String message = e.getFieldError().getDefaultMessage();
     AppError error = AppError.valueOf(message);
-
     ApiResponse<String> response = ApiResponse.<String>builder()
       .success(false)
       .statusCode(error.getStatusCode())
@@ -36,10 +35,11 @@ public class AppExceptionHandler {
 
   @ExceptionHandler(value = AppException.class)
   ResponseEntity<ApiResponse<String>> handleAppException(AppException e) {
+    AppError error = e.getError();
     ApiResponse<String> response = ApiResponse.<String>builder()
       .success(false)
-      .statusCode(e.getError().getStatusCode())
-      .message(e.getError().getMessage())
+      .statusCode(error.getStatusCode())
+      .message(error.getMessage())
       .data(null)
       .build();
     return ResponseEntity.status(response.getStatusCode()).body(response);
