@@ -22,6 +22,11 @@ public class AuthService {
     User user = repository.findByUsername(request.getUsername())
       .orElseThrow(() -> new AppException(AppError.USER_NOT_FOUND));
     PasswordEncoder encoder = new BCryptPasswordEncoder(10);
-    return encoder.matches(request.getPassword(), user.getPassword());
+
+    if (!encoder.matches(request.getPassword(), user.getPassword())) {
+      throw new AppException(AppError.UNAUTHORIZED);
+    } else {
+      return true;
+    }
   }
 }
