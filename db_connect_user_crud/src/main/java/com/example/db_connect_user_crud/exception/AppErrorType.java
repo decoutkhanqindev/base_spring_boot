@@ -10,7 +10,7 @@ import lombok.experimental.FieldDefaults;
 @AllArgsConstructor
 @Getter
 @ToString
-public enum AppError {
+public enum AppErrorType {
   UNKNOWN_ERROR(500, "An unexpected error occurred"),
   USERNAME_INVALID(400, "Username must be between 3 and 20 characters"),
   PASSWORD_INVALID(400, "Password must be at least 8 characters"),

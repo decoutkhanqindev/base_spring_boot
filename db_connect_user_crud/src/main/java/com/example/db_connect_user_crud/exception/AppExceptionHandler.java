@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 public class AppExceptionHandler {
   @ExceptionHandler(value = RuntimeException.class)
   ResponseEntity<ApiResponse<String>> handleRuntimeException(RuntimeException e) {
-    AppError error = AppError.UNKNOWN_ERROR;
+    AppErrorType error = AppErrorType.UNKNOWN_ERROR;
     ApiResponse<String> response = ApiResponse.<String>builder()
       .success(false)
       .statusCode(error.getStatusCode())
@@ -23,7 +23,7 @@ public class AppExceptionHandler {
   @ExceptionHandler(value = MethodArgumentNotValidException.class)
   ResponseEntity<ApiResponse<String>> handleValidation(MethodArgumentNotValidException e) {
     String message = e.getFieldError().getDefaultMessage();
-    AppError error = AppError.valueOf(message);
+    AppErrorType error = AppErrorType.valueOf(message);
     ApiResponse<String> response = ApiResponse.<String>builder()
       .success(false)
       .statusCode(error.getStatusCode())
@@ -35,7 +35,7 @@ public class AppExceptionHandler {
 
   @ExceptionHandler(value = AppException.class)
   ResponseEntity<ApiResponse<String>> handleAppException(AppException e) {
-    AppError error = e.getError();
+    AppErrorType error = e.getError();
     ApiResponse<String> response = ApiResponse.<String>builder()
       .success(false)
       .statusCode(error.getStatusCode())
