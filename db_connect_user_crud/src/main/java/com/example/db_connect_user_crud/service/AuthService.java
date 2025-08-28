@@ -18,6 +18,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import lombok.experimental.NonFinal;
 import lombok.extern.slf4j.Slf4j;
+import lombok.val;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -47,8 +48,9 @@ public class AuthService {
     User user = repository.findByUsername(request.getUsername())
       .orElseThrow(() -> new AppException(AppErrorType.USER_NOT_FOUND));
     PasswordEncoder encoder = new BCryptPasswordEncoder(10);
+    boolean isMatched = encoder.matches(request.getPassword(), user.getPassword());
 
-    if (!encoder.matches(request.getPassword(), user.getPassword())) {
+    if (!isMatched) {
       throw new AppException(AppErrorType.UNAUTHORIZED);
     }
 
@@ -85,12 +87,13 @@ public class AuthService {
     String token = request.getToken();
 
     try {
-      JWSVerifier verifier = new MACVerifier(SECRET_KEY.getBytes());
       SignedJWT signedJWT = SignedJWT.parse(token);
+      JWSVerifier verifier = new MACVerifier(SECRET_KEY.getBytes());
       boolean isVerified = signedJWT.verify(verifier);
       Date exp = signedJWT.getJWTClaimsSet().getExpirationTime();
+      boolean isValid = isVerified && exp.after(new Date());
 
-      if (!isVerified && exp.after(new Date())) {
+      if (!isValid) {
         throw new AppException(AppErrorType.UNAUTHORIZED);
       }
 
