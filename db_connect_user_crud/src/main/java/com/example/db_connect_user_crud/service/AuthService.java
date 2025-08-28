@@ -47,9 +47,8 @@ public class AuthService {
     User user = repository.findByUsername(request.getUsername())
       .orElseThrow(() -> new AppException(AppErrorType.USER_NOT_FOUND));
     PasswordEncoder encoder = new BCryptPasswordEncoder(10);
-    boolean isAuthenticated = encoder.matches(request.getPassword(), user.getPassword());
 
-    if (!isAuthenticated) {
+    if (!encoder.matches(request.getPassword(), user.getPassword())) {
       throw new AppException(AppErrorType.UNAUTHORIZED);
     }
 
@@ -90,9 +89,8 @@ public class AuthService {
       SignedJWT signedJWT = SignedJWT.parse(token);
       boolean isVerified = signedJWT.verify(verifier);
       Date exp = signedJWT.getJWTClaimsSet().getExpirationTime();
-      boolean isValid = isVerified && exp.after(new Date());
 
-      if (!isValid) {
+      if (!isVerified && exp.after(new Date())) {
         throw new AppException(AppErrorType.UNAUTHORIZED);
       }
 
