@@ -12,7 +12,7 @@ public class AppExceptionHandler {
   ResponseEntity<ApiResponse<String>> handleRuntimeException(RuntimeException e) {
     AppErrorType error = AppErrorType.UNKNOWN_ERROR;
     ApiResponse<String> response = ApiResponse.<String>builder()
-      .success(false)
+      .isSuccess(false)
       .statusCode(error.getStatusCode())
       .message(error.getMessage())
       .data(null)
@@ -25,7 +25,7 @@ public class AppExceptionHandler {
     String message = e.getFieldError().getDefaultMessage();
     AppErrorType error = AppErrorType.valueOf(message);
     ApiResponse<String> response = ApiResponse.<String>builder()
-      .success(false)
+      .isSuccess(false)
       .statusCode(error.getStatusCode())
       .message(error.getMessage())
       .data(null)
@@ -37,7 +37,7 @@ public class AppExceptionHandler {
   ResponseEntity<ApiResponse<String>> handleAppException(AppException e) {
     AppErrorType error = e.getError();
     ApiResponse<String> response = ApiResponse.<String>builder()
-      .success(false)
+      .isSuccess(false)
       .statusCode(error.getStatusCode())
       .message(error.getMessage())
       .data(null)

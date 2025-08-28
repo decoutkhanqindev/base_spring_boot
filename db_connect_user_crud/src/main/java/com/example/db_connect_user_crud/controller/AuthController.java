@@ -1,8 +1,10 @@
 package com.example.db_connect_user_crud.controller;
 
 import com.example.db_connect_user_crud.dto.request.AuthRequest;
+import com.example.db_connect_user_crud.dto.request.IntrospectRequest;
 import com.example.db_connect_user_crud.dto.response.ApiResponse;
 import com.example.db_connect_user_crud.dto.response.AuthResponse;
+import com.example.db_connect_user_crud.dto.response.IntrospectResponse;
 import com.example.db_connect_user_crud.service.AuthService;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
@@ -23,6 +25,14 @@ public class AuthController {
   public ApiResponse<AuthResponse> authenticate(@RequestBody AuthRequest request) {
     AuthResponse response = service.authenticate(request);
     return ApiResponse.<AuthResponse>builder()
+      .data(response)
+      .build();
+  }
+
+  @PostMapping("/introspect")
+  public ApiResponse<IntrospectResponse> introspect(@RequestBody IntrospectRequest request) {
+    IntrospectResponse response = service.introspect(request);
+    return ApiResponse.<IntrospectResponse>builder()
       .data(response)
       .build();
   }

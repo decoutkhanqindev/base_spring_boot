@@ -4,7 +4,6 @@ import lombok.*;
 import lombok.experimental.FieldDefaults;
 
 @Data
-//@JsonInclude(JsonInclude.Include.NON_NULL)
 @Builder
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @NoArgsConstructor
@@ -13,12 +12,6 @@ import lombok.experimental.FieldDefaults;
 @Getter
 @ToString
 @EqualsAndHashCode
-public class ApiResponse<T> {
-  @Builder.Default
-  Boolean isSuccess = true;
-  @Builder.Default
-  int statusCode = 200;
-  @Builder.Default
-  String message = "";
-  T data;
+public class IntrospectResponse {
+  boolean isValid;
 }

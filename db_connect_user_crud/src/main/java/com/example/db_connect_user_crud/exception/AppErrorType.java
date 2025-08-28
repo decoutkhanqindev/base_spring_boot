@@ -20,7 +20,7 @@ public enum AppErrorType {
   EMAIL_NOT_BLANK(400, "Email is required"),
   USER_EXISTS(409, "User already exists"),
   USER_NOT_FOUND(401, "User not found"),
-  UNAUTHORIZED(401, "Unauthorized user")
+  UNAUTHORIZED(401, "Unauthorized user"),
   ;
 
   int statusCode;

@@ -15,3 +15,7 @@ spring:
     hibernate:
       ddl-auto: update
     show-sql: true
+
+jwt:
+  secret-key: cdae3f3fa96c862641885fb903ea23599fe68af0483b932aebfcf1af425900bd122b2f565b4fc46b3ebaed0ff7f49893ed8ee256a99e14540d260e8554997099
+  issuer: decoutkhanqindev.com
