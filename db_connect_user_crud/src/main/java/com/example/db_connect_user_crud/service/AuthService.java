@@ -28,6 +28,8 @@ import java.text.ParseException;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.Date;
+import java.util.Set;
+import java.util.StringJoiner;
 
 @Slf4j
 @Service
@@ -54,19 +56,20 @@ public class AuthService {
       throw new AppException(AppErrorType.UNAUTHORIZED);
     }
 
-    String token = generateToken(user.getUsername());
+    String token = generateToken(user);
     return AuthResponse.builder()
       .token(token)
       .build();
   }
 
-  private String generateToken(String username) {
+  private String generateToken(User user) {
     Date now = new Date();
     Date exp = new Date(Instant.now().plus(1, ChronoUnit.HOURS).toEpochMilli());
 
     JWSHeader header = new JWSHeader(JWSAlgorithm.HS512);
     JWTClaimsSet claimsSet = new JWTClaimsSet.Builder()
-      .subject(username)
+      .subject(user.getUsername())
+      .claim("scope", buildScope(user.getRoles()))
       .issuer(ISSUER)
       .issueTime(now)
       .expirationTime(exp)
@@ -81,6 +84,14 @@ public class AuthService {
     } catch (JOSEException e) {
       throw new AppException(AppErrorType.UNKNOWN_ERROR);
     }
+  }
+
+  private String buildScope(Set<String> roles) {
+    StringJoiner joiner = new StringJoiner(" ");
+    if (!roles.isEmpty()) {
+      roles.forEach(joiner::add);
+    }
+    return joiner.toString();
   }
 
   public IntrospectResponse introspect(IntrospectRequest request) {

@@ -8,14 +8,15 @@ import com.example.db_connect_user_crud.exception.AppErrorType;
 import com.example.db_connect_user_crud.exception.AppException;
 import com.example.db_connect_user_crud.mapper.UserMapper;
 import com.example.db_connect_user_crud.repository.UserRepository;
+import com.example.db_connect_user_crud.type.RoleType;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-
+import java.util.HashSet;
 import java.util.List;
+
 
 @Service
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
@@ -23,14 +24,20 @@ import java.util.List;
 public class UserService {
   UserRepository repository;
   UserMapper mapper;
+  PasswordEncoder encoder;
 
   public UserResponse createUser(UserCreationRequest request) {
     if (repository.existsByUsername(request.getUsername()))
       throw new AppException(AppErrorType.USER_EXISTS);
 
     User user = mapper.toEntity(request);
-    PasswordEncoder encoder = new BCryptPasswordEncoder(10);
-    user.setPassword(encoder.encode(request.getPassword()));
+
+    String encodedPassword = encoder.encode(request.getPassword());
+    user.setPassword(encodedPassword);
+
+    HashSet<String> roles = new HashSet<>();
+    roles.add(RoleType.USER.name());
+    user.setRoles(roles);
 
     return mapper.toResponse(repository.save(user));
   }
