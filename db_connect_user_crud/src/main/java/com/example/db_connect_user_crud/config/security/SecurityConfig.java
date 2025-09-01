@@ -64,7 +64,7 @@ public class SecurityConfig {
     http.exceptionHandling(exceptionHandler ->
       exceptionHandler
         .authenticationEntryPoint(new SecurityAuthenticationEntryPoint())
-        .accessDeniedHandler(new SecurityAccessDeniedEntryPoint())
+        .accessDeniedHandler(new SecurityAccessDeniedHandler())
     );
 
     // disable csrf (cross site request forgery)

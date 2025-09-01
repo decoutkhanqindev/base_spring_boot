@@ -10,7 +10,7 @@ import org.springframework.security.web.access.AccessDeniedHandler;
 
 import java.io.IOException;
 
-public class SecurityAccessDeniedEntryPoint implements AccessDeniedHandler {
+public class SecurityAccessDeniedHandler implements AccessDeniedHandler {
   @Override
   public void handle(HttpServletRequest request, HttpServletResponse response, AccessDeniedException accessDeniedException) throws IOException {
     ApiResponse<?> apiResponse = ApiResponse.builder()
