@@ -3,7 +3,6 @@ package com.example.db_connect_user_crud.config.security;
 import com.example.db_connect_user_crud.constants.AppValues;
 import com.example.db_connect_user_crud.constants.AuthEndpoints;
 import com.example.db_connect_user_crud.constants.UserEndpoints;
-import com.example.db_connect_user_crud.type.ErrorType;
 import com.example.db_connect_user_crud.type.RoleType;
 import lombok.experimental.NonFinal;
 import lombok.extern.slf4j.Slf4j;
@@ -57,14 +56,10 @@ public class SecurityConfig {
 
     // configure oauth2 resource server for jwt authentication
     http.oauth2ResourceServer(oauth2Configurer ->
-      oauth2Configurer.jwt(jwtConfigurer -> jwtConfigurer.decoder(jwtDecoder()))
-    );
-
-    // exception handler for unauthorized access
-    http.exceptionHandling(exceptionHandler ->
-      exceptionHandler
-        .authenticationEntryPoint(new SecurityAuthenticationEntryPoint())
-        .accessDeniedHandler(new SecurityAccessDeniedHandler())
+      oauth2Configurer
+        .jwt(jwtConfigurer -> jwtConfigurer.decoder(jwtDecoder()))
+        .authenticationEntryPoint(new JwtAuthenticationEntryPoint())
+        .accessDeniedHandler(new JwtAccessDeniedHandler())
     );
 
     // disable csrf (cross site request forgery)

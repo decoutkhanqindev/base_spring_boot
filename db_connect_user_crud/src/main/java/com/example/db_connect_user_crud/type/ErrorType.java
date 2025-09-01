@@ -20,8 +20,8 @@ public enum ErrorType {
   EMAIL_NOT_BLANK(400, "Email is required"),
   USER_EXISTS(409, "User already exists"),
   USER_NOT_FOUND(401, "User not found"),
-  UNAUTHORIZED(401, "Unauthorized user"),
-  FORBIDDEN(403, "Forbidden user"),
+  UNAUTHORIZED(401, "User is not authorized"),
+  FORBIDDEN(403, "User is not allowed to access"),
   ;
 
   int statusCode;
