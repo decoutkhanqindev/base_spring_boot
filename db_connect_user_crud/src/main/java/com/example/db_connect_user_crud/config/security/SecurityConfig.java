@@ -1,6 +1,12 @@
-package com.example.db_connect_user_crud.config;
+package com.example.db_connect_user_crud.config.security;
 
+import com.example.db_connect_user_crud.constants.AppValues;
+import com.example.db_connect_user_crud.constants.AuthEndpoints;
+import com.example.db_connect_user_crud.constants.UserEndpoints;
+import com.example.db_connect_user_crud.type.ErrorType;
 import com.example.db_connect_user_crud.type.RoleType;
+import lombok.experimental.NonFinal;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -17,16 +23,22 @@ import org.springframework.security.web.SecurityFilterChain;
 
 import javax.crypto.spec.SecretKeySpec;
 
+@Slf4j
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
-  // public endpoints are allowed to be accessed without authentication
-  private final String[] PUBLIC_ENDPOINTS = {"/user", "/auth/login", "/auth/introspect"};
+  private final String[] AUTH_ENDPOINTS = {
+    AuthEndpoints.AUTH + AuthEndpoints.LOGIN,
+    AuthEndpoints.AUTH + AuthEndpoints.INTROSPECT
+  };
 
-  // admin endpoints are allowed to be accessed only with admin roles
-  private final String[] ADMIN_ENDPOINTS = {"/user/all", "user/{id}"};
+  private final String[] USER_ENDPOINTS = {
+    UserEndpoints.USER + UserEndpoints.ALL,
+    UserEndpoints.USER + UserEndpoints.USER_ID,
+  };
 
-  @Value("${jwt.secret-key}")
+  @NonFinal
+  @Value(AppValues.SECRET_KEY)
   private String SECRET_KEY;
 
   @Bean
@@ -35,10 +47,9 @@ public class SecurityConfig {
     // configure a security filter chain for endpoints
     http.authorizeHttpRequests(request ->
       request
-        .requestMatchers(HttpMethod.POST, PUBLIC_ENDPOINTS)
+        .requestMatchers(HttpMethod.POST, AUTH_ENDPOINTS)
         .permitAll()
-        .requestMatchers(HttpMethod.GET, ADMIN_ENDPOINTS)
-//        .hasRole(RoleType.ADMIN.name())
+        .requestMatchers(HttpMethod.GET, USER_ENDPOINTS)
         .hasAnyAuthority("SCOPE_" + RoleType.ADMIN.name())
         .anyRequest()
         .authenticated()
@@ -47,6 +58,13 @@ public class SecurityConfig {
     // configure oauth2 resource server for jwt authentication
     http.oauth2ResourceServer(oauth2Configurer ->
       oauth2Configurer.jwt(jwtConfigurer -> jwtConfigurer.decoder(jwtDecoder()))
+    );
+
+    // exception handler for unauthorized access
+    http.exceptionHandling(exceptionHandler ->
+      exceptionHandler
+        .authenticationEntryPoint(new SecurityAuthenticationEntryPoint())
+        .accessDeniedHandler(new SecurityAccessDeniedEntryPoint())
     );
 
     // disable csrf (cross site request forgery)
@@ -58,7 +76,7 @@ public class SecurityConfig {
   @Bean
   // define a jwt decoder to verify jwt token
   public JwtDecoder jwtDecoder() {
-    SecretKeySpec secretKeySpec = new SecretKeySpec(SECRET_KEY.getBytes(), "HS512");
+    SecretKeySpec secretKeySpec = new SecretKeySpec(SECRET_KEY.getBytes(), MacAlgorithm.HS512.name());
     return NimbusJwtDecoder
       .withSecretKey(secretKeySpec)
       .macAlgorithm(MacAlgorithm.HS512)
