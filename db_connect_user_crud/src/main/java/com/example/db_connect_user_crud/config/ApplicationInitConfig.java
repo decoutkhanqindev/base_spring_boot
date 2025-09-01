@@ -28,7 +28,7 @@ public class ApplicationInitConfig {
       roles.add(RoleType.ADMIN.name());
 
       if (!repository.existsByRoles(roles)) {
-        String encodedPassword = encoder.encode("12345678");
+        String encodedPassword = encoder.encode("admin12345678");
 
         User user = User.builder()
           .username("admin")
@@ -38,8 +38,7 @@ public class ApplicationInitConfig {
           .build();
 
         repository.save(user);
-
-        log.warn("User admin created with password 12345678, please change it");
+        log.warn("User admin created with password admin12345678, please change it");
       } else {
         log.info("User admin already exists");
       }
