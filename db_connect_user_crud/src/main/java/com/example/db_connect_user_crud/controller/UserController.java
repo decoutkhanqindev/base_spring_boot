@@ -1,5 +1,6 @@
 package com.example.db_connect_user_crud.controller;
 
+import com.example.db_connect_user_crud.constants.UserEndpoints;
 import com.example.db_connect_user_crud.dto.request.UserCreationRequest;
 import com.example.db_connect_user_crud.dto.request.UserUpdateRequest;
 import com.example.db_connect_user_crud.dto.response.ApiResponse;
@@ -14,7 +15,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/user")
+@RequestMapping(UserEndpoints.USER)
 @RequiredArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class UserController {
@@ -28,7 +29,7 @@ public class UserController {
       .build();
   }
 
-  @GetMapping("/all")
+  @GetMapping(UserEndpoints.ALL)
   public ApiResponse<List<UserResponse>> getAllUsers() {
     List<UserResponse> response = service.getAllUsers();
     return ApiResponse.<List<UserResponse>>builder()
@@ -36,7 +37,7 @@ public class UserController {
       .build();
   }
 
-  @GetMapping("/{id}")
+  @GetMapping(UserEndpoints.USER_ID)
   public ApiResponse<UserResponse> getUserById(@PathVariable String id) {
     UserResponse response = service.getUserById(id);
     return ApiResponse.<UserResponse>builder()
@@ -44,7 +45,7 @@ public class UserController {
       .build();
   }
 
-  @PutMapping("/{id}")
+  @PutMapping(UserEndpoints.USER_ID)
   public ApiResponse<UserResponse> updateUserById(@PathVariable String id, @RequestBody @Valid UserUpdateRequest request) {
     UserResponse response = service.updateUserById(id, request);
     return ApiResponse.<UserResponse>builder()
@@ -52,7 +53,7 @@ public class UserController {
       .build();
   }
 
-  @DeleteMapping("/{id}")
+  @DeleteMapping(UserEndpoints.USER_ID)
   public ApiResponse<UserResponse> deleteUserById(@PathVariable String id) {
     UserResponse response = service.deleteUserById(id);
     return ApiResponse.<UserResponse>builder()
