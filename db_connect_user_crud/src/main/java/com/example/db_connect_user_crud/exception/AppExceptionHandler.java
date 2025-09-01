@@ -1,6 +1,7 @@
 package com.example.db_connect_user_crud.exception;
 
 import com.example.db_connect_user_crud.dto.response.ApiResponse;
+import com.example.db_connect_user_crud.type.ErrorType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -10,7 +11,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 public class AppExceptionHandler {
   @ExceptionHandler(value = RuntimeException.class)
   ResponseEntity<ApiResponse<String>> handleRuntimeException(RuntimeException e) {
-    AppErrorType error = AppErrorType.UNKNOWN_ERROR;
+    ErrorType error = ErrorType.UNKNOWN_ERROR;
     ApiResponse<String> response = ApiResponse.<String>builder()
       .isSuccess(false)
       .statusCode(error.getStatusCode())
@@ -23,7 +24,7 @@ public class AppExceptionHandler {
   @ExceptionHandler(value = MethodArgumentNotValidException.class)
   ResponseEntity<ApiResponse<String>> handleValidation(MethodArgumentNotValidException e) {
     String message = e.getFieldError().getDefaultMessage();
-    AppErrorType error = AppErrorType.valueOf(message);
+    ErrorType error = ErrorType.valueOf(message);
     ApiResponse<String> response = ApiResponse.<String>builder()
       .isSuccess(false)
       .statusCode(error.getStatusCode())
@@ -35,7 +36,7 @@ public class AppExceptionHandler {
 
   @ExceptionHandler(value = AppException.class)
   ResponseEntity<ApiResponse<String>> handleAppException(AppException e) {
-    AppErrorType error = e.getError();
+    ErrorType error = e.getError();
     ApiResponse<String> response = ApiResponse.<String>builder()
       .isSuccess(false)
       .statusCode(error.getStatusCode())

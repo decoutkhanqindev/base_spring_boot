@@ -1,5 +1,6 @@
 package com.example.db_connect_user_crud.exception;
 
+import com.example.db_connect_user_crud.type.ErrorType;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
@@ -11,5 +12,5 @@ import lombok.experimental.FieldDefaults;
 @Setter
 @ToString
 public class AppException extends RuntimeException {
-  AppErrorType error;
+  ErrorType error;
 }

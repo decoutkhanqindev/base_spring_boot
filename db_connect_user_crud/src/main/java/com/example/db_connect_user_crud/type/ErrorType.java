@@ -1,4 +1,4 @@
-package com.example.db_connect_user_crud.exception;
+package com.example.db_connect_user_crud.type;
 
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -10,7 +10,7 @@ import lombok.experimental.FieldDefaults;
 @AllArgsConstructor
 @Getter
 @ToString
-public enum AppErrorType {
+public enum ErrorType {
   UNKNOWN_ERROR(500, "An unexpected error occurred"),
   USERNAME_INVALID(400, "Username must be between 3 and 20 characters"),
   PASSWORD_INVALID(400, "Password must be at least 8 characters"),
@@ -21,6 +21,7 @@ public enum AppErrorType {
   USER_EXISTS(409, "User already exists"),
   USER_NOT_FOUND(401, "User not found"),
   UNAUTHORIZED(401, "Unauthorized user"),
+  FORBIDDEN(403, "Forbidden user"),
   ;
 
   int statusCode;
