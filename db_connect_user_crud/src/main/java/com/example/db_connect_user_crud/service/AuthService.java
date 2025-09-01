@@ -1,11 +1,12 @@
 package com.example.db_connect_user_crud.service;
 
+import com.example.db_connect_user_crud.constants.AppValues;
 import com.example.db_connect_user_crud.dto.request.AuthRequest;
 import com.example.db_connect_user_crud.dto.request.IntrospectRequest;
 import com.example.db_connect_user_crud.dto.response.AuthResponse;
 import com.example.db_connect_user_crud.dto.response.IntrospectResponse;
 import com.example.db_connect_user_crud.entity.User;
-import com.example.db_connect_user_crud.exception.AppErrorType;
+import com.example.db_connect_user_crud.type.ErrorType;
 import com.example.db_connect_user_crud.exception.AppException;
 import com.example.db_connect_user_crud.repository.UserRepository;
 import com.nimbusds.jose.*;
@@ -38,21 +39,21 @@ public class AuthService {
   UserRepository repository;
 
   @NonFinal
-  @Value("${jwt.secret-key}")
+  @Value(AppValues.SECRET_KEY)
   String SECRET_KEY;
 
   @NonFinal
-  @Value("${jwt.issuer}")
+  @Value(AppValues.ISSUER)
   String ISSUER;
 
   public AuthResponse authenticate(AuthRequest request) {
     User user = repository.findByUsername(request.getUsername())
-      .orElseThrow(() -> new AppException(AppErrorType.USER_NOT_FOUND));
+      .orElseThrow(() -> new AppException(ErrorType.USER_NOT_FOUND));
     PasswordEncoder encoder = new BCryptPasswordEncoder(10);
     boolean isMatched = encoder.matches(request.getPassword(), user.getPassword());
 
     if (!isMatched) {
-      throw new AppException(AppErrorType.UNAUTHORIZED);
+      throw new AppException(ErrorType.UNAUTHORIZED);
     }
 
     String token = generateToken(user);
@@ -81,7 +82,7 @@ public class AuthService {
       jwsObject.sign(signer);
       return jwsObject.serialize();
     } catch (JOSEException e) {
-      throw new AppException(AppErrorType.UNKNOWN_ERROR);
+      throw new AppException(ErrorType.UNKNOWN_ERROR);
     }
   }
 
@@ -104,14 +105,14 @@ public class AuthService {
       boolean isValid = isVerified && exp.after(new Date());
 
       if (!isValid) {
-        throw new AppException(AppErrorType.UNAUTHORIZED);
+        throw new AppException(ErrorType.UNAUTHORIZED);
       }
 
       return IntrospectResponse.builder()
         .isValid(true)
         .build();
     } catch (JOSEException | ParseException e) {
-      throw new AppException(AppErrorType.UNKNOWN_ERROR);
+      throw new AppException(ErrorType.UNKNOWN_ERROR);
     }
   }
 }
