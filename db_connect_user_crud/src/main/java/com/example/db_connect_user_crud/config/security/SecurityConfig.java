@@ -1,8 +1,6 @@
 package com.example.db_connect_user_crud.config.security;
 
-import com.example.db_connect_user_crud.constants.AppValues;
-import com.example.db_connect_user_crud.constants.AuthEndpoints;
-import com.example.db_connect_user_crud.constants.UserEndpoints;
+import com.example.db_connect_user_crud.constants.*;
 import com.example.db_connect_user_crud.type.RoleType;
 import lombok.experimental.NonFinal;
 import lombok.extern.slf4j.Slf4j;
@@ -26,14 +24,36 @@ import javax.crypto.spec.SecretKeySpec;
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
-  private final String[] AUTH_ENDPOINTS = {
+  private final String[] AUTH_POST_ENDPOINTS = {
     AuthEndpoints.AUTH + AuthEndpoints.LOGIN,
     AuthEndpoints.AUTH + AuthEndpoints.INTROSPECT
   };
 
-  private final String[] USER_ENDPOINTS = {
+  private final String[] ADMIN_GET_ENDPOINTS = {
     UserEndpoints.USER + UserEndpoints.ALL,
     UserEndpoints.USER + UserEndpoints.USER_ID,
+    RoleEndpoints.ROLE + RoleEndpoints.ALL,
+    RoleEndpoints.ROLE + RoleEndpoints.ROLE_NAME,
+    PermissionEndpoints.PERMISSION + PermissionEndpoints.ALL,
+    PermissionEndpoints.PERMISSION + PermissionEndpoints.PERMISSION_NAME
+  };
+
+  private final String[] ADMIN_POST_ENDPOINTS = {
+    UserEndpoints.USER,
+    RoleEndpoints.ROLE,
+    PermissionEndpoints.PERMISSION
+  };
+
+  private final String[] ADMIN_PUT_ENDPOINTS = {
+    UserEndpoints.USER + UserEndpoints.USER_ID,
+    RoleEndpoints.ROLE + RoleEndpoints.ROLE_NAME,
+    PermissionEndpoints.PERMISSION + PermissionEndpoints.PERMISSION_NAME
+  };
+
+  private final String[] ADMIN_DELETE_ENDPOINTS = {
+    UserEndpoints.USER + UserEndpoints.USER_ID,
+    RoleEndpoints.ROLE + RoleEndpoints.ROLE_NAME,
+    PermissionEndpoints.PERMISSION + PermissionEndpoints.PERMISSION_NAME
   };
 
   @NonFinal
@@ -46,12 +66,12 @@ public class SecurityConfig {
     // configure a security filter chain for endpoints
     http.authorizeHttpRequests(request ->
       request
-        .requestMatchers(HttpMethod.POST, AUTH_ENDPOINTS)
-        .permitAll()
-        .requestMatchers(HttpMethod.GET, USER_ENDPOINTS)
-        .hasAnyAuthority("SCOPE_" + RoleType.ADMIN.name())
-        .anyRequest()
-        .authenticated()
+        .requestMatchers(HttpMethod.POST, AUTH_POST_ENDPOINTS).permitAll()
+        .requestMatchers(HttpMethod.GET, ADMIN_GET_ENDPOINTS).hasAnyAuthority("SCOPE_" + RoleType.ADMIN.name())
+        .requestMatchers(HttpMethod.POST, ADMIN_POST_ENDPOINTS).hasAnyAuthority("SCOPE_" + RoleType.ADMIN.name())
+        .requestMatchers(HttpMethod.PUT, ADMIN_PUT_ENDPOINTS).hasAnyAuthority("SCOPE_" + RoleType.ADMIN.name())
+        .requestMatchers(HttpMethod.DELETE, ADMIN_DELETE_ENDPOINTS).hasAnyAuthority("SCOPE_" + RoleType.ADMIN.name())
+        .anyRequest().authenticated()
     );
 
     // configure oauth2 resource server for jwt authentication

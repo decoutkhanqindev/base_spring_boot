@@ -22,40 +22,40 @@ public class UserController {
   UserService service;
 
   @PostMapping
-  public ApiResponse<UserResponse> createUser(@RequestBody @Valid UserCreationRequest request) {
-    UserResponse response = service.createUser(request);
+  public ApiResponse<UserResponse> create(@RequestBody @Valid UserCreationRequest request) {
+    UserResponse response = service.create(request);
     return ApiResponse.<UserResponse>builder()
       .data(response)
       .build();
   }
 
   @GetMapping(UserEndpoints.ALL)
-  public ApiResponse<List<UserResponse>> getAllUsers() {
-    List<UserResponse> response = service.getAllUsers();
+  public ApiResponse<List<UserResponse>> getAll() {
+    List<UserResponse> response = service.getAll();
     return ApiResponse.<List<UserResponse>>builder()
       .data(response)
       .build();
   }
 
   @GetMapping(UserEndpoints.USER_ID)
-  public ApiResponse<UserResponse> getUserById(@PathVariable String id) {
-    UserResponse response = service.getUserById(id);
+  public ApiResponse<UserResponse> getById(@PathVariable String id) {
+    UserResponse response = service.getById(id);
     return ApiResponse.<UserResponse>builder()
       .data(response)
       .build();
   }
 
   @PutMapping(UserEndpoints.USER_ID)
-  public ApiResponse<UserResponse> updateUserById(@PathVariable String id, @RequestBody @Valid UserUpdateRequest request) {
-    UserResponse response = service.updateUserById(id, request);
+  public ApiResponse<UserResponse> updateById(@PathVariable String id, @RequestBody @Valid UserUpdateRequest request) {
+    UserResponse response = service.updateById(id, request);
     return ApiResponse.<UserResponse>builder()
       .data(response)
       .build();
   }
 
   @DeleteMapping(UserEndpoints.USER_ID)
-  public ApiResponse<UserResponse> deleteUserById(@PathVariable String id) {
-    UserResponse response = service.deleteUserById(id);
+  public ApiResponse<UserResponse> deleteById(@PathVariable String id) {
+    UserResponse response = service.deleteById(id);
     return ApiResponse.<UserResponse>builder()
       .data(response)
       .build();

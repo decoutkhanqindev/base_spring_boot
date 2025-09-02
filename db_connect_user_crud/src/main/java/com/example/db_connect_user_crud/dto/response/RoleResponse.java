@@ -1,9 +1,9 @@
 package com.example.db_connect_user_crud.dto.response;
 
+import com.example.db_connect_user_crud.entity.Permission;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
-import java.time.LocalDate;
 import java.util.Set;
 
 @Data
@@ -15,10 +15,8 @@ import java.util.Set;
 @Getter
 @ToString
 @EqualsAndHashCode
-public class UserResponse {
-  String id;
-  String username;
-  String email;
-  LocalDate dob;
-  Set<RoleResponse> roles;
+public class RoleResponse {
+  String name;
+  String description;
+  Set<PermissionResponse> permissions;
 }

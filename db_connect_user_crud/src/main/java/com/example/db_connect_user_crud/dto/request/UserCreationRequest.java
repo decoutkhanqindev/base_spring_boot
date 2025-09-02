@@ -7,6 +7,7 @@ import lombok.*;
 import lombok.experimental.FieldDefaults;
 
 import java.time.LocalDate;
+import java.util.Set;
 
 @Data
 @Builder
@@ -21,14 +22,11 @@ public class UserCreationRequest {
   @Size(min = 3, max = 20, message = "USERNAME_INVALID")
   @NotBlank(message = "USERNAME_NOT_BLANK")
   String username;
-
   @Size(min = 8, message = "PASSWORD_INVALID")
   @NotBlank(message = "PASSWORD_NOT_BLANK")
   String password;
-
   @Email(message = "EMAIL_INVALID")
   @NotBlank(message = "EMAIL_NOT_BLANK")
   String email;
-
   LocalDate dob;
 }

@@ -5,11 +5,13 @@ import com.example.db_connect_user_crud.dto.request.UserUpdateRequest;
 import com.example.db_connect_user_crud.dto.response.UserResponse;
 import com.example.db_connect_user_crud.entity.User;
 import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
 
 @Mapper(componentModel = "spring")
 public interface UserMapper {
   User toEntity(UserCreationRequest request);
   UserResponse toResponse(User user);
+  @Mapping(target = "roles", ignore = true)
   void updateEntity(@MappingTarget User user, UserUpdateRequest request);
 }

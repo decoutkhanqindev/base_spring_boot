@@ -3,9 +3,11 @@ package com.example.db_connect_user_crud.service;
 import com.example.db_connect_user_crud.dto.request.UserCreationRequest;
 import com.example.db_connect_user_crud.dto.request.UserUpdateRequest;
 import com.example.db_connect_user_crud.dto.response.UserResponse;
+import com.example.db_connect_user_crud.entity.Role;
 import com.example.db_connect_user_crud.entity.User;
 import com.example.db_connect_user_crud.exception.AppException;
 import com.example.db_connect_user_crud.mapper.UserMapper;
+import com.example.db_connect_user_crud.repository.RoleRepository;
 import com.example.db_connect_user_crud.repository.UserRepository;
 import com.example.db_connect_user_crud.type.ErrorType;
 import com.example.db_connect_user_crud.type.RoleType;
@@ -23,50 +25,54 @@ import java.util.List;
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 @RequiredArgsConstructor
 public class UserService {
-  UserRepository repository;
-  UserMapper mapper;
+  UserRepository userRepository;
+  RoleRepository roleRepository;
+  UserMapper userMapper;
   PasswordEncoder encoder;
 
-  public UserResponse createUser(UserCreationRequest request) {
-    if (repository.existsByUsername(request.getUsername()))
+  public UserResponse create(UserCreationRequest request) {
+    if (userRepository.existsByUsername(request.getUsername()))
       throw new AppException(ErrorType.USER_EXISTS);
 
-    User user = mapper.toEntity(request);
+    User user = userMapper.toEntity(request);
 
     String encodedPassword = encoder.encode(request.getPassword());
     user.setPassword(encodedPassword);
 
-    HashSet<String> roles = new HashSet<>();
-    roles.add(RoleType.USER.name());
+    HashSet<Role> roles = new HashSet<>(roleRepository.findAllById(List.of(RoleType.USER.name())));
     user.setRoles(roles);
 
-    return mapper.toResponse(repository.save(user));
+    return userMapper.toResponse(userRepository.save(user));
   }
 
-  public List<UserResponse> getAllUsers() {
-    return repository.findAll()
+  public List<UserResponse> getAll() {
+    return userRepository.findAll()
       .stream()
-      .map(mapper::toResponse)
+      .map(userMapper::toResponse)
       .toList();
   }
 
-  public UserResponse getUserById(String id) {
-    return repository.findById(id)
-      .map(mapper::toResponse)
+  public UserResponse getById(String id) {
+    return userRepository.findById(id)
+      .map(userMapper::toResponse)
       .orElseThrow(() -> new AppException(ErrorType.USER_NOT_FOUND));
   }
 
-  public UserResponse updateUserById(String id, UserUpdateRequest request) {
-    User user = repository.findById(id)
+  public UserResponse updateById(String id, UserUpdateRequest request) {
+    User user = userRepository.findById(id)
       .orElseThrow(() -> new AppException(ErrorType.USER_NOT_FOUND));
-    mapper.updateEntity(user, request);
-    return mapper.toResponse(repository.save(user));
+
+    HashSet<Role> roles = new HashSet<>(roleRepository.findAllById(List.of(RoleType.USER.name())));
+    user.setRoles(roles);
+
+    userMapper.updateEntity(user, request);
+    return userMapper.toResponse(userRepository.save(user));
   }
 
-  public UserResponse deleteUserById(String id) {
-    User user = repository.findById(id)
+  public UserResponse deleteById(String id) {
+    User user = userRepository.findById(id)
       .orElseThrow(() -> new AppException(ErrorType.USER_NOT_FOUND));
-    repository.delete(user);
-    return mapper.toResponse(user);
+    userRepository.delete(user);
+    return userMapper.toResponse(user);
   }
 }

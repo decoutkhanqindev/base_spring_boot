@@ -5,6 +5,7 @@ import com.example.db_connect_user_crud.dto.request.AuthRequest;
 import com.example.db_connect_user_crud.dto.request.IntrospectRequest;
 import com.example.db_connect_user_crud.dto.response.AuthResponse;
 import com.example.db_connect_user_crud.dto.response.IntrospectResponse;
+import com.example.db_connect_user_crud.entity.Role;
 import com.example.db_connect_user_crud.entity.User;
 import com.example.db_connect_user_crud.exception.AppException;
 import com.example.db_connect_user_crud.repository.UserRepository;
@@ -86,10 +87,10 @@ public class AuthService {
     }
   }
 
-  private String buildScope(Set<String> roles) {
+  private String buildScope(Set<Role> roles) {
     StringJoiner joiner = new StringJoiner(" ");
     if (!roles.isEmpty()) {
-      roles.forEach(joiner::add);
+      roles.forEach(it -> joiner.add(it.getName()));
     }
     return joiner.toString();
   }
