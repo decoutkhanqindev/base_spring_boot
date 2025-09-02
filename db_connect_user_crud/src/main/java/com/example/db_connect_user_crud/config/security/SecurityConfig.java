@@ -16,6 +16,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.jose.jws.MacAlgorithm;
 import org.springframework.security.oauth2.jwt.JwtDecoder;
 import org.springframework.security.oauth2.jwt.NimbusJwtDecoder;
+import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationConverter;
+import org.springframework.security.oauth2.server.resource.authentication.JwtGrantedAuthoritiesConverter;
 import org.springframework.security.web.SecurityFilterChain;
 
 import javax.crypto.spec.SecretKeySpec;
@@ -67,17 +69,21 @@ public class SecurityConfig {
     http.authorizeHttpRequests(request ->
       request
         .requestMatchers(HttpMethod.POST, AUTH_POST_ENDPOINTS).permitAll()
-        .requestMatchers(HttpMethod.GET, ADMIN_GET_ENDPOINTS).hasAnyAuthority("SCOPE_" + RoleType.ADMIN.name())
-        .requestMatchers(HttpMethod.POST, ADMIN_POST_ENDPOINTS).hasAnyAuthority("SCOPE_" + RoleType.ADMIN.name())
-        .requestMatchers(HttpMethod.PUT, ADMIN_PUT_ENDPOINTS).hasAnyAuthority("SCOPE_" + RoleType.ADMIN.name())
-        .requestMatchers(HttpMethod.DELETE, ADMIN_DELETE_ENDPOINTS).hasAnyAuthority("SCOPE_" + RoleType.ADMIN.name())
+        .requestMatchers(HttpMethod.GET, ADMIN_GET_ENDPOINTS).hasRole(RoleType.ADMIN.name())
+        .requestMatchers(HttpMethod.POST, ADMIN_POST_ENDPOINTS).hasRole(RoleType.ADMIN.name())
+        .requestMatchers(HttpMethod.PUT, ADMIN_PUT_ENDPOINTS).hasRole(RoleType.ADMIN.name())
+        .requestMatchers(HttpMethod.DELETE, ADMIN_DELETE_ENDPOINTS).hasRole(RoleType.ADMIN.name())
         .anyRequest().authenticated()
     );
 
     // configure oauth2 resource server for jwt authentication
     http.oauth2ResourceServer(oauth2Configurer ->
       oauth2Configurer
-        .jwt(jwtConfigurer -> jwtConfigurer.decoder(jwtDecoder()))
+        .jwt(jwtConfigurer ->
+          jwtConfigurer
+            .decoder(jwtDecoder())
+            .jwtAuthenticationConverter(jwtAuthenticationConverter())
+        )
         .authenticationEntryPoint(new JwtAuthenticationEntryPoint())
         .accessDeniedHandler(new JwtAccessDeniedHandler())
     );
@@ -96,6 +102,17 @@ public class SecurityConfig {
       .withSecretKey(secretKeySpec)
       .macAlgorithm(MacAlgorithm.HS512)
       .build();
+  }
+
+  @Bean
+  public JwtAuthenticationConverter jwtAuthenticationConverter() {
+    JwtGrantedAuthoritiesConverter jwtGrantedAuthoritiesConverter = new JwtGrantedAuthoritiesConverter();
+    jwtGrantedAuthoritiesConverter.setAuthorityPrefix("");
+
+    JwtAuthenticationConverter jwtAuthenticationConverter = new JwtAuthenticationConverter();
+    jwtAuthenticationConverter.setJwtGrantedAuthoritiesConverter(jwtGrantedAuthoritiesConverter);
+
+    return jwtAuthenticationConverter;
   }
 
   @Bean

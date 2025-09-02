@@ -90,7 +90,14 @@ public class AuthService {
   private String buildScope(Set<Role> roles) {
     StringJoiner joiner = new StringJoiner(" ");
     if (!roles.isEmpty()) {
-      roles.forEach(it -> joiner.add(it.getName()));
+      roles.forEach(it -> {
+          joiner.add("ROLE_" + it.getName());
+
+          if (!it.getPermissions().isEmpty()) {
+            it.getPermissions().forEach(perm -> joiner.add(perm.getName()));
+          }
+        }
+      );
     }
     return joiner.toString();
   }
