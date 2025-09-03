@@ -1,4 +1,4 @@
-package com.example.db_connect_user_crud.dto.request;
+package com.example.db_connect_user_crud.dto.response;
 
 import lombok.*;
 import lombok.experimental.FieldDefaults;
@@ -12,7 +12,6 @@ import lombok.experimental.FieldDefaults;
 @Getter
 @ToString
 @EqualsAndHashCode
-public class AuthRequest {
-  String username;
-  String password;
+public class LogoutResponse {
+  String invalidToken;
 }

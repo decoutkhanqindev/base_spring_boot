@@ -12,6 +12,6 @@ import lombok.experimental.FieldDefaults;
 @Getter
 @ToString
 @EqualsAndHashCode
-public class AuthResponse {
+public class LoginResponse {
   String token;
 }
